@@ -1,0 +1,146 @@
+import java.util.Scanner;
+
+public class EnhancedCalculator {
+
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("\n===== Enhanced Calculator =====");
+            System.out.println("1. Basic Arithmetic");
+            System.out.println("2. Scientific Functions");
+            System.out.println("3. Unit Conversion");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option: ");
+
+            try {
+                int choice = sc.nextInt();
+
+                switch (choice) {
+                    case 1 -> arithmeticMenu();
+                    case 2 -> scientificMenu();
+                    case 3 -> conversionMenu();
+                    case 4 -> {
+                        System.out.println("Exiting... Goodbye!");
+                        return;
+                    }
+                    default -> System.out.println("Invalid choice! Try again.");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: Please enter a valid number!");
+                sc.nextLine(); // clear input buffer
+            }
+        }
+    }
+
+    // ================== BASIC ARITHMETIC ==================
+    public static void arithmeticMenu() {
+        System.out.println("\n--- Basic Arithmetic ---");
+        System.out.print("Enter first number: ");
+        double a = sc.nextDouble();
+        System.out.print("Enter second number: ");
+        double b = sc.nextDouble();
+
+        System.out.println("Choose operation (+ - * / %): ");
+        char op = sc.next().charAt(0);
+
+        try {
+            double result = switch (op) {
+                case '+' -> a + b;
+                case '-' -> a - b;
+                case '*' -> a * b;
+                case '/' -> {
+                    if (b == 0) throw new ArithmeticException("Division by zero!");
+                    yield a / b;
+                }
+                case '%' -> a % b;
+                default -> throw new IllegalArgumentException("Invalid operator!");
+            };
+            System.out.println("Result = " + result);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    // ================== SCIENTIFIC FUNCTIONS ==================
+    public static void scientificMenu() {
+        System.out.println("\n--- Scientific Functions ---");
+        System.out.println("1. Power");
+        System.out.println("2. Square Root");
+        System.out.println("3. Logarithm");
+        System.out.println("4. Trigonometry (sin, cos, tan)");
+
+        int choice = sc.nextInt();
+        switch (choice) {
+            case 1 -> {
+                System.out.print("Enter base: ");
+                double base = sc.nextDouble();
+                System.out.print("Enter exponent: ");
+                double exp = sc.nextDouble();
+                System.out.println("Result = " + Math.pow(base, exp));
+            }
+            case 2 -> {
+                System.out.print("Enter number: ");
+                double num = sc.nextDouble();
+                System.out.println("Square Root = " + Math.sqrt(num));
+            }
+            case 3 -> {
+                System.out.print("Enter number: ");
+                double num = sc.nextDouble();
+                System.out.println("Logarithm (base e) = " + Math.log(num));
+            }
+            case 4 -> {
+                System.out.print("Enter angle in degrees: ");
+                double deg = sc.nextDouble();
+                double rad = Math.toRadians(deg);
+                System.out.println("sin = " + Math.sin(rad));
+                System.out.println("cos = " + Math.cos(rad));
+                System.out.println("tan = " + Math.tan(rad));
+            }
+            default -> System.out.println("Invalid choice!");
+        }
+    }
+
+    // ================== UNIT CONVERSION ==================
+    public static void conversionMenu() {
+        System.out.println("\n--- Unit Conversion ---");
+        System.out.println("1. Temperature");
+        System.out.println("2. Currency (USD ↔ INR)");
+        System.out.println("3. Length (meters ↔ kilometers)");
+
+        int choice = sc.nextInt();
+        switch (choice) {
+            case 1 -> temperatureConversion();
+            case 2 -> currencyConversion();
+            case 3 -> lengthConversion();
+            default -> System.out.println("Invalid choice!");
+        }
+    }
+
+    // Temperature conversion
+    public static void temperatureConversion() {
+        System.out.print("Enter Celsius: ");
+        double c = sc.nextDouble();
+        double f = (c * 9 / 5) + 32;
+        double k = c + 273.15;
+        System.out.println(c + "°C = " + f + "°F = " + k + "K");
+    }
+
+    // Currency conversion (fixed rate example)
+    public static void currencyConversion() {
+        double rate = 83.0; // Assume 1 USD = 83 INR
+        System.out.print("Enter amount in USD: ");
+        double usd = sc.nextDouble();
+        double inr = usd * rate;
+        System.out.println(usd + " USD = " + inr + " INR");
+    }
+
+    // Length conversion
+    public static void lengthConversion() {
+        System.out.print("Enter meters: ");
+        double m = sc.nextDouble();
+        double km = m / 1000;
+        double miles = m / 1609.34;
+        System.out.println(m + " m = " + km + " km = " + miles + " miles");
+    }
+}
