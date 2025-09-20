@@ -1,0 +1,165 @@
+import java.util.*;
+import java.io.*;
+
+// The Contact class is a data structure, it does not need to be public
+class Contact {
+    private String name;
+    private String phone;
+    private String email;
+
+    // Constructor
+    public Contact(String name, String phone, String email) {
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+    }
+
+    // Getters and setters
+    public String getName() { return name; }
+    public String getPhone() { return phone; }
+    public String getEmail() { return email; }
+
+    public void setName(String name) { this.name = name; }
+    public void setPhone(String phone) { this.phone = phone; }
+    public void setEmail(String email) { this.email = email; }
+
+    @Override
+    public String toString() {
+        return "Name: " + name + " | Phone: " + phone + " | Email: " + email;
+    }
+}
+
+// Rename the main class to Main to be compatible with most online compilers
+public class Main {
+    private static ArrayList<Contact> contacts = new ArrayList<>();
+    private static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("\n===== Contact Management System =====");
+            System.out.println("1. Add Contact");
+            System.out.println("2. View All Contacts");
+            System.out.println("3. Update Contact");
+            System.out.println("4. Delete Contact");
+            System.out.println("5. Search Contact");
+            System.out.println("6. Export Contacts to File");
+            System.out.println("7. Exit");
+            System.out.print("Choose option: ");
+
+            int choice = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1 -> addContact();
+                case 2 -> viewContacts();
+                case 3 -> updateContact();
+                case 4 -> deleteContact();
+                case 5 -> searchContact();
+                case 6 -> exportToFile();
+                case 7 -> {
+                    System.out.println("Exiting... Goodbye!");
+                    return;
+                }
+                default -> System.out.println("Invalid choice! Try again.");
+            }
+        }
+    }
+
+    // ============ CREATE ============
+    private static void addContact() {
+        System.out.print("Enter name: ");
+        String name = sc.nextLine();
+        System.out.print("Enter phone: ");
+        String phone = sc.nextLine();
+        System.out.print("Enter email: ");
+        String email = sc.nextLine();
+
+        // Check duplicates
+        for (Contact c : contacts) {
+            if (c.getPhone().equals(phone) || c.getEmail().equals(email)) {
+                System.out.println("Error: Duplicate phone/email found!");
+                return;
+            }
+        }
+
+        contacts.add(new Contact(name, phone, email));
+        System.out.println("Contact added successfully!");
+    }
+
+    // ============ READ ============
+    private static void viewContacts() {
+        if (contacts.isEmpty()) {
+            System.out.println("No contacts available!");
+            return;
+        }
+        System.out.println("\n--- Contact List ---");
+        for (Contact c : contacts) {
+            System.out.println(c);
+        }
+    }
+
+    // ============ UPDATE ============
+    private static void updateContact() {
+        System.out.print("Enter phone of contact to update: ");
+        String phone = sc.nextLine();
+
+        for (Contact c : contacts) {
+            if (c.getPhone().equals(phone)) {
+                System.out.print("Enter new name: ");
+                c.setName(sc.nextLine());
+                System.out.print("Enter new phone: ");
+                c.setPhone(sc.nextLine());
+                System.out.print("Enter new email: ");
+                c.setEmail(sc.nextLine());
+                System.out.println("Contact updated!");
+                return;
+            }
+        }
+        System.out.println("Contact not found!");
+    }
+
+    // ============ DELETE ============
+    private static void deleteContact() {
+        System.out.print("Enter phone of contact to delete: ");
+        String phone = sc.nextLine();
+
+        Iterator<Contact> it = contacts.iterator();
+        while (it.hasNext()) {
+            if (it.next().getPhone().equals(phone)) {
+                it.remove();
+                System.out.println("Contact deleted!");
+                return;
+            }
+        }
+        System.out.println("Contact not found!");
+    }
+
+    // ============ SEARCH ============
+    private static void searchContact() {
+        System.out.print("Enter keyword (name/phone/email): ");
+        String keyword = sc.nextLine().toLowerCase();
+
+        boolean found = false;
+        for (Contact c : contacts) {
+            if (c.getName().toLowerCase().contains(keyword) ||
+                c.getPhone().contains(keyword) ||
+                c.getEmail().toLowerCase().contains(keyword)) {
+                System.out.println(c);
+                found = true;
+            }
+        }
+        if (!found) System.out.println("No matching contact found!");
+    }
+
+    // ============ EXPORT ============
+    private static void exportToFile() {
+        try (PrintWriter writer = new PrintWriter(new File("contacts.txt"))) {
+            for (Contact c : contacts) {
+                writer.println(c);
+            }
+            System.out.println("Contacts exported to contacts.txt");
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
+    }
+}
